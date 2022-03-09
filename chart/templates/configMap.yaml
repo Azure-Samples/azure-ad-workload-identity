@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todolist-configmap
+data:
+  aspNetCoreEnvironment: {{ default "Docker" .Values.configMap.aspNetCoreEnvironment }}
+  todoApiServiceEndpointUri: {{ default "todolist-api" .Values.configMap.todoApiServiceEndpointUri }}
+  todoWebDataProtectionBlobStorageContainerName: {{ default "todoweb" .Values.configMap.todoWebDataProtectionBlobStorageContainerName }}
+  todoApiDataProtectionBlobStorageContainerName: {{ default "todoapi" .Values.configMap.todoApiDataProtectionBlobStorageContainerName }}
+  keyVaultName: {{ .Values.configMap.keyVaultName }}

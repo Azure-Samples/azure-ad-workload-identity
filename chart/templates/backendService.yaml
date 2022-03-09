@@ -1,0 +1,14 @@
+{{- $backendServiceName := include "todolist.backendService.name" . -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $backendServiceName }}
+  labels:
+    {{- include "todolist.backend.labels" . | nindent 4 }}
+spec:
+  type: {{ default "ClusterIP" .Values.backendService.type }}
+  ports:
+    - port: {{ default 80 .Values.backendService.port }}
+      protocol: TCP
+  selector:
+    {{- include "todolist.backend.selectorLabels" . | nindent 4 }}

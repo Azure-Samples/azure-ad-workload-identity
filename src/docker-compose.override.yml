@@ -1,0 +1,33 @@
+version: '3.4'
+
+services:
+  todoapi:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      #- RepositoryService__CosmosDb__EndpointUri=https://<cosmos-db-account-name>.documents.azure.com:443/
+      #- RepositoryService__CosmosDb__PrimaryKey=<cosmos-db-account-primary-key>
+      #- RepositoryService__CosmosDb__DatabaseName=<cosmos-db-account-name>Db
+      #- RepositoryService__CosmosDb__CollectionName=<cosmos-db-account-name>Collection
+      #- NotificationService__ServiceBus__ConnectionString=Endpoint=<service-bus-namespace-connection-string>
+      #- NotificationService__ServiceBus__QueueName=<cosmos-db-account-name>
+      #- DataProtection__BlobStorage__ConnectionString=<storage-account-connection-string>
+      - DataProtection__BlobStorage__ContainerName=todoapi
+      #- ApplicationInsights__InstrumentationKey=7a871c9d-9802-415b-98f1-4954169379c9
+      - KeyVault__Name=<key-vault-name>
+      - AZURE_CLIENT_ID="<aad-application-client-id>" 
+      - AZURE_TENANT_ID="<aad-application-tenant-id>" 
+      - AZURE_CLIENT_SECRET="<aad-application-password>" 
+    ports:
+      - "80"
+  todoweb:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      #- DataProtection__BlobStorage__ConnectionString=<storage-account-connection-string>
+      - DataProtection__BlobStorage__ContainerName=todoweb
+      #- ApplicationInsights__InstrumentationKey=7a871c9d-9802-415b-98f1-4954169379c9
+      - KeyVault__Name=<key-vault-name>
+      - AZURE_CLIENT_ID="<aad-application-client-id>" 
+      - AZURE_TENANT_ID="<aad-application-tenant-id>" 
+      - AZURE_CLIENT_SECRET="<aad-application-password>" 
+    ports:
+      - "80"

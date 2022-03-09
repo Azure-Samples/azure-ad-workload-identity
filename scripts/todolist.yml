@@ -1,0 +1,252 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todolist-api
+  labels:
+    app: todolist
+    role: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: todolist
+      role: backend
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: todolist
+        role: backend
+    spec:
+      serviceAccountName: todolist-identity-sa
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app: todolist
+            role: backend
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app: todolist
+            role: backend
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: todolist-api
+        image: paolosalvatori.azurecr.io/todoapi:net60v06
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /api/todo/1
+            port: 80
+          failureThreshold: 1
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /api/todo/1
+            port: 80
+          failureThreshold: 1
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        startupProbe:
+          httpGet:
+            path: /api/todo/1
+            port: 80
+          failureThreshold: 1
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: todolist-configmap
+              key: aspNetCoreEnvironment
+        - name: DataProtection__BlobStorage__ContainerName
+          valueFrom:
+            configMapKeyRef:
+              name: todolist-configmap
+              key: todoApiDataProtectionBlobStorageContainerName
+        - name: KeyVault__Name
+          valueFrom:
+            configMapKeyRef:
+              name: todolist-configmap
+              key: keyVaultName
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todolist-api
+  labels:
+    app: todolist
+    role: backend
+spec:
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: 80
+  selector:
+    app: todolist
+    role: backend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todolist-web
+  labels:
+    app: todolist
+    role: frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+     app: todolist
+     role: frontend
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: todolist
+        role: frontend
+    spec:
+      serviceAccountName: todolist-identity-sa
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app: todolist
+            role: frontend
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app: todolist
+            role: frontend
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: todolist-web
+        image: paolosalvatori.azurecr.io/todoweb:net60v06
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /About
+            port: 80
+          failureThreshold: 1
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /About
+            port: 80
+          failureThreshold: 1
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        startupProbe:
+          httpGet:
+            path: /About
+            port: 80
+          failureThreshold: 1
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: todolist-configmap
+              key: aspNetCoreEnvironment
+        - name: TodoApiService__EndpointUri
+          valueFrom:
+            configMapKeyRef:
+              name: todolist-configmap
+              key: todoApiServiceEndpointUri
+        - name: DataProtection__BlobStorage__ContainerName
+          valueFrom:
+            configMapKeyRef:
+              name: todolist-configmap
+              key: todoWebDataProtectionBlobStorageContainerName
+        - name: KeyVault__Name
+          valueFrom:
+            configMapKeyRef:
+              name: todolist-configmap
+              key: keyVaultName
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todolist-web
+  labels:
+    app: todolist
+    role: frontend
+spec:
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: 80
+  selector:
+    app: todolist
+    role: frontend
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: todolist-api
+spec:
+  maxReplicas: 10
+  minReplicas: 3
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: todolist-api
+  targetCPUUtilizationPercentage: 50
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: todolist-web
+spec:
+  maxReplicas: 10
+  minReplicas: 3
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: todolist-web
+  targetCPUUtilizationPercentage: 50

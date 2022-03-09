@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  todoapi:
+    image: ${DOCKER_REGISTRY-}todoapi
+    build:
+      context: .
+      dockerfile: TodoApi/Dockerfile
+
+  todoweb:
+    image: ${DOCKER_REGISTRY-}todoweb
+    build:
+      context: .
+      dockerfile: TodoWeb/Dockerfile
