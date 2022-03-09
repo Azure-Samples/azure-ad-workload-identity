@@ -1,0 +1,30 @@
+@page
+@model DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TodoItem.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TodoItem.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TodoItem.IsComplete)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TodoItem.IsComplete)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.TodoItem.Id">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

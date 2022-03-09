@@ -1,0 +1,210 @@
+# Default values for todolist.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: "todolist-identity-sa"
+  appId: ""
+  tenantId: ""
+
+configMap:
+  aspNetCoreEnvironment: Docker
+  todoApiServiceEndpointUri: todolist-api
+  todoWebDataProtectionBlobStorageContainerName: todoweb
+  todoApiDataProtectionBlobStorageContainerName: todoapi
+  keyVaultName: TodoListKeyVault
+
+frontendDeployment:
+  name: todolist-web
+  image:
+    repository: paolosalvatori.azurecr.io/todoweb
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: net60v06
+  replicaCount: 3
+  autoscaling:
+    enabled: false
+    minReplicas: 3
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+  resources: 
+    requests:
+      memory: "64Mi"
+      cpu: "250m"
+    limits:
+      memory: "128Mi"
+      cpu: "500m"
+  nodeSelector:
+    "kubernetes.io/os": linux
+  topologySpreadConstraints:
+    enabled: true
+    maxSkew: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  livenessProbe:
+    httpGet:
+      path: /About
+    failureThreshold: 1
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+  readinessProbe:
+    httpGet:
+      path: /About
+    failureThreshold: 1
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+  startupProbe:
+    httpGet:
+      path: /About
+    failureThreshold: 30
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+  tolerations: []
+  affinity: {}
+  env:
+  - name: ASPNETCORE_ENVIRONMENT
+    valueFrom:
+      configMapKeyRef:
+        name: todolist-configmap
+        key: aspNetCoreEnvironment
+  - name: TodoApiService__EndpointUri
+    valueFrom:
+      configMapKeyRef:
+        name: todolist-configmap
+        key: todoApiServiceEndpointUri
+  - name: DataProtection__BlobStorage__ContainerName
+    valueFrom:
+      configMapKeyRef:
+        name: todolist-configmap
+        key: todoWebDataProtectionBlobStorageContainerName
+  - name: KeyVault__Name
+    valueFrom:
+      configMapKeyRef:
+        name: todolist-configmap
+        key: keyVaultName
+
+backendDeployment:
+  name: todolist-api
+  image:
+    repository: paolosalvatori.azurecr.io/todoapi
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: net60v04
+  replicaCount: 3
+  autoscaling:
+    enabled: false
+    minReplicas: 3
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+  resources: 
+    requests:
+      memory: "64Mi"
+      cpu: "250m"
+    limits:
+      memory: "128Mi"
+      cpu: "500m"
+  nodeSelector:
+    "kubernetes.io/os": linux
+  topologySpreadConstraints:
+    enabled: true
+    maxSkew: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  livenessProbe:
+    httpGet:
+      path: /api/todo/1
+    failureThreshold: 1
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+  readinessProbe:
+    httpGet:
+      path: /api/todo/1
+    failureThreshold: 1
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+  startupProbe:
+    httpGet:
+      path: /api/todo/1
+    failureThreshold: 30
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+  tolerations: []
+  affinity: {}
+  env:
+  - name: ASPNETCORE_ENVIRONMENT
+    valueFrom:
+      configMapKeyRef:
+        name: todolist-configmap
+        key: aspNetCoreEnvironment
+  - name: DataProtection__BlobStorage__ContainerName
+    valueFrom:
+      configMapKeyRef:
+        name: todolist-configmap
+        key: todoApiDataProtectionBlobStorageContainerName
+  - name: KeyVault__Name
+    valueFrom:
+      configMapKeyRef:
+        name: todolist-configmap
+        key: keyVaultName
+
+frontendService:
+  name: todolist-web
+  type: ClusterIP
+  port: 80
+  portName: http
+
+backendService:
+  name: todolist-api
+  type: ClusterIP
+  port: 80
+  portName: http
+
+frontendIngress:
+  enabled: true
+  name: ingress-frontend
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-nginx
+  hosts:
+  - host: ox.babosbird.com
+  tls:
+  - hosts:
+    - ox.babosbird.com
+
+backendIngress:
+  enabled: true
+  name: ingress-backend
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-nginx
+  hosts:
+  - host: oxapi.babosbird.com
+  tls:
+  - hosts:
+    - oxapi.babosbird.com

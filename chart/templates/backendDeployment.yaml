@@ -1,0 +1,98 @@
+{{- $backendServicePortName := include "todolist.backendService.portName" . -}}
+{{- $deploymentName := include "todolist.backendDeployment.name" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $deploymentName }}
+  labels:
+    {{- include "todolist.backend.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.backendDeployment.autoscaling.enabled }}
+  replicas: {{ .Values.backendDeployment.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "todolist.backend.selectorLabels" . | nindent 6 }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.backendDeployment.strategy.rollingUpdate.maxSurge | default 1 }}
+      maxUnavailable: {{ .Values.backendDeployment.strategy.rollingUpdate.maxUnavailable | default 1 }}
+  template:
+    metadata:
+      labels:
+        {{- include "todolist.backend.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "todolist.serviceAccountName" . }}
+      containers:
+        - name: {{ $deploymentName }}
+          image: "{{ .Values.backendDeployment.image.repository }}:{{ .Values.backendDeployment.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.backendDeployment.image.pullPolicy }}
+          ports:
+          - name: {{ $backendServicePortName }}
+            containerPort: 80
+            protocol: TCP
+          {{- with .Values.backendDeployment.livenessProbe}}
+          livenessProbe:
+            httpGet:
+              path: {{ .httpGet.path | default "/"  }}
+              port: {{ $backendServicePortName }}
+            failureThreshold: {{ .failureThreshold | default 1 }}
+            initialDelaySeconds: {{ .initialDelaySeconds | default 10 }}
+            periodSeconds: {{ .periodSeconds | default 10 }}
+            timeoutSeconds: {{ .timeoutSeconds | default 10 }}
+          {{- end }}
+          {{- with .Values.backendDeployment.readinessProbe}}
+          readinessProbe:
+            httpGet:
+              path: {{ .httpGet.path | default "/"  }}
+              port: {{ $backendServicePortName }}
+            failureThreshold: {{ .failureThreshold | default 1 }}
+            initialDelaySeconds: {{ .initialDelaySeconds | default 10 }}
+            periodSeconds: {{ .periodSeconds | default 10 }}
+            timeoutSeconds: {{ .timeoutSeconds | default 10 }}
+          {{- end }}
+          {{- with .Values.backendDeployment.startupProbe}}
+          startupProbe:
+            httpGet:
+              path: {{ .httpGet.path | default "/"  }}
+              port:  {{ $backendServicePortName }}
+            failureThreshold: {{ .failureThreshold | default 1 }}
+            initialDelaySeconds: {{ .initialDelaySeconds | default 10 }}
+            periodSeconds: {{ .periodSeconds | default 10 }}
+            timeoutSeconds: {{ .timeoutSeconds | default 10 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.backendDeployment.resources | nindent 12 }}
+          env:
+            {{- toYaml .Values.backendDeployment.env | nindent 12 }}
+      {{- with .Values.backendDeployment.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.backendDeployment.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.backendDeployment.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.frontendDeployment.topologySpreadConstraints.enabled }}
+      topologySpreadConstraints:
+      - maxSkew: {{ default 1 .Values.frontendDeployment.topologySpreadConstraints.maxSkew }}
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            {{- include "todolist.frontend.selectorLabels" . | nindent 12 }}
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            {{- include "todolist.frontend.selectorLabels" . | nindent 12 }}
+      {{- end }}

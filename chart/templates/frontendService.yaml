@@ -1,0 +1,14 @@
+{{- $frontendServiceName := include "todolist.frontendService.name" . -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $frontendServiceName }}
+  labels:
+    {{- include "todolist.frontend.labels" . | nindent 4 }}
+spec:
+  type: {{ default "ClusterIP" .Values.frontendService.type }}
+  ports:
+    - port: {{ default 80 .Values.frontendService.port }}
+      protocol: TCP
+  selector:
+    {{- include "todolist.frontend.selectorLabels" . | nindent 4 }}

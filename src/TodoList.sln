@@ -1,0 +1,128 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoApi", "TodoApi\TodoApi.csproj", "{9F7DF99C-D0C2-4535-A380-E01F5D46FBF3}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{E251DC6A-D6F5-465F-A3FF-9283A3BCF27F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoWeb", "TodoWeb\TodoWeb.csproj", "{B642B02F-FCE2-40B2-9456-CF8F3EA89F5C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Readme", "Readme", "{D7B53071-9B1D-4C80-B771-05119307801E}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{8CFC5E2C-495E-4AFD-B022-CB9034271DFD}"
+	ProjectSection(SolutionItems) = preProject
+		Images\AcrUsernamePassword.png = Images\AcrUsernamePassword.png
+		Images\BackendPools.png = Images\BackendPools.png
+		Images\DockerCompose.png = Images\DockerCompose.png
+		Images\godaddy.png = Images\godaddy.png
+		Images\HelmTodoList.png = Images\HelmTodoList.png
+		Images\HttpsTodoWeb.png = Images\HttpsTodoWeb.png
+		Images\K8sDashboard.png = Images\K8sDashboard.png
+		Images\Kubectl.png = Images\Kubectl.png
+		Images\KubectlGetNodes.png = Images\KubectlGetNodes.png
+		Images\KubernetesArchitecture.png = Images\KubernetesArchitecture.png
+		Images\LoadBalancingRules.png = Images\LoadBalancingRules.png
+		Images\Manifests.png = Images\Manifests.png
+		Images\NginxIngressControllerPublicIp.png = Images\NginxIngressControllerPublicIp.png
+		Images\Nodes.png = Images\Nodes.png
+		Images\publicdomain.png = Images\publicdomain.png
+		Images\PublicIps.png = Images\PublicIps.png
+		Images\ServiceFabricArchitecture.png = Images\ServiceFabricArchitecture.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{90F0D4AD-7A8C-4708-8B46-551481C81EFD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ASP.NET Core Projects", "ASP.NET Core Projects", "{F0EED513-E018-4722-99AD-28BD8C64E9AD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Linkerd", "Linkerd", "{BFC1B238-C6BB-4A8A-8933-8ADC20690239}"
+	ProjectSection(SolutionItems) = preProject
+		..\scripts\linkerd\01-push-docker-images.sh = ..\scripts\linkerd\01-push-docker-images.sh
+		..\scripts\linkerd\02-deploy-voting.sh = ..\scripts\linkerd\02-deploy-voting.sh
+		..\scripts\linkerd\03-install-linkerd.sh = ..\scripts\linkerd\03-install-linkerd.sh
+		..\scripts\linkerd\04-add-linkerd.sh = ..\scripts\linkerd\04-add-linkerd.sh
+		..\scripts\linkerd\05-create-service-profile-from-swagger.sh = ..\scripts\linkerd\05-create-service-profile-from-swagger.sh
+		..\scripts\linkerd\06-update-deployments.sh = ..\scripts\linkerd\06-update-deployments.sh
+		..\scripts\linkerd\07-uninstall-linkerd-proxy.sh = ..\scripts\linkerd\07-uninstall-linkerd-proxy.sh
+		..\scripts\linkerd\08-uninstall-linkerd.sh = ..\scripts\linkerd\08-uninstall-linkerd.sh
+		..\scripts\linkerd\09-deploy-voting-kv.sh = ..\scripts\linkerd\09-deploy-voting-kv.sh
+		..\scripts\linkerd\10-deploy-voting-wish = ..\scripts\linkerd\10-deploy-voting-wish
+		..\scripts\linkerd\11-add-linkerd-kv.sh = ..\scripts\linkerd\11-add-linkerd-kv.sh
+		..\scripts\linkerd\12-add-linkerd-wish = ..\scripts\linkerd\12-add-linkerd-wish
+		..\scripts\linkerd\13-create-service-profile-from-swagger-kv.sh = ..\scripts\linkerd\13-create-service-profile-from-swagger-kv.sh
+		..\scripts\linkerd\14-create-service-profile-from-swagger-wish = ..\scripts\linkerd\14-create-service-profile-from-swagger-wish
+		..\scripts\linkerd\voting-data-service-profile.yml = ..\scripts\linkerd\voting-data-service-profile.yml
+		..\scripts\linkerd\voting-kv.yml = ..\scripts\linkerd\voting-kv.yml
+		..\scripts\linkerd\voting-wiyml = ..\scripts\linkerd\voting-wiyml
+		..\scripts\linkerd\voting.yml = ..\scripts\linkerd\voting.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ManagedIdentity", "ManagedIdentity", "{E3802739-6B3E-4C7B-A921-F793E471C205}"
+	ProjectSection(SolutionItems) = preProject
+		..\scripts\managedIdentity\01-deploy-azure-aad-identity-infrastructure.sh = ..\scripts\managedIdentity\01-deploy-azure-aad-identity-infrastructure.sh
+		..\scripts\managedIdentity\02-create-key-vault-and-secrets.sh = ..\scripts\managedIdentity\02-create-key-vault-and-secrets.sh
+		..\scripts\managedIdentity\03-create-managed-identity.sh = ..\scripts\managedIdentity\03-create-managed-identity.sh
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetworkPolicies", "NetworkPolicies", "{120F2328-BBF0-4F90-8CF2-1B73128C140D}"
+	ProjectSection(SolutionItems) = preProject
+		..\scripts\networkPolicies\01-create-namespace.sh = ..\scripts\networkPolicies\01-create-namespace.sh
+		..\scripts\networkPolicies\02-apply-deny-all-backend-policy.sh = ..\scripts\networkPolicies\02-apply-deny-all-backend-policy.sh
+		..\scripts\networkPolicies\03-delete-deny-all-backend-policy.sh = ..\scripts\networkPolicies\03-delete-deny-all-backend-policy.sh
+		..\scripts\networkPolicies\04-apply-allow-inbound-traffic-based-on-pod-label.sh = ..\scripts\networkPolicies\04-apply-allow-inbound-traffic-based-on-pod-label.sh
+		..\scripts\networkPolicies\05-delete-allow-inbound-traffic-based-on-pod-label.sh = ..\scripts\networkPolicies\05-delete-allow-inbound-traffic-based-on-pod-label.sh
+		..\scripts\networkPolicies\allow-inbound-traffic-based-on-pod-label.yml = ..\scripts\networkPolicies\allow-inbound-traffic-based-on-pod-label.yml
+		..\scripts\networkPolicies\deny-all-backend-policy.yml = ..\scripts\networkPolicies\deny-all-backend-policy.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9F7DF99C-D0C2-4535-A380-E01F5D46FBF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F7DF99C-D0C2-4535-A380-E01F5D46FBF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F7DF99C-D0C2-4535-A380-E01F5D46FBF3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9F7DF99C-D0C2-4535-A380-E01F5D46FBF3}.Debug|x64.Build.0 = Debug|Any CPU
+		{9F7DF99C-D0C2-4535-A380-E01F5D46FBF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F7DF99C-D0C2-4535-A380-E01F5D46FBF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F7DF99C-D0C2-4535-A380-E01F5D46FBF3}.Release|x64.ActiveCfg = Release|Any CPU
+		{9F7DF99C-D0C2-4535-A380-E01F5D46FBF3}.Release|x64.Build.0 = Release|Any CPU
+		{E251DC6A-D6F5-465F-A3FF-9283A3BCF27F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E251DC6A-D6F5-465F-A3FF-9283A3BCF27F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E251DC6A-D6F5-465F-A3FF-9283A3BCF27F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E251DC6A-D6F5-465F-A3FF-9283A3BCF27F}.Debug|x64.Build.0 = Debug|Any CPU
+		{E251DC6A-D6F5-465F-A3FF-9283A3BCF27F}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{E251DC6A-D6F5-465F-A3FF-9283A3BCF27F}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{E251DC6A-D6F5-465F-A3FF-9283A3BCF27F}.Release|x64.ActiveCfg = Release|Any CPU
+		{E251DC6A-D6F5-465F-A3FF-9283A3BCF27F}.Release|x64.Build.0 = Release|Any CPU
+		{B642B02F-FCE2-40B2-9456-CF8F3EA89F5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B642B02F-FCE2-40B2-9456-CF8F3EA89F5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B642B02F-FCE2-40B2-9456-CF8F3EA89F5C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B642B02F-FCE2-40B2-9456-CF8F3EA89F5C}.Debug|x64.Build.0 = Debug|Any CPU
+		{B642B02F-FCE2-40B2-9456-CF8F3EA89F5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B642B02F-FCE2-40B2-9456-CF8F3EA89F5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B642B02F-FCE2-40B2-9456-CF8F3EA89F5C}.Release|x64.ActiveCfg = Release|Any CPU
+		{B642B02F-FCE2-40B2-9456-CF8F3EA89F5C}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9F7DF99C-D0C2-4535-A380-E01F5D46FBF3} = {F0EED513-E018-4722-99AD-28BD8C64E9AD}
+		{B642B02F-FCE2-40B2-9456-CF8F3EA89F5C} = {F0EED513-E018-4722-99AD-28BD8C64E9AD}
+		{BFC1B238-C6BB-4A8A-8933-8ADC20690239} = {90F0D4AD-7A8C-4708-8B46-551481C81EFD}
+		{E3802739-6B3E-4C7B-A921-F793E471C205} = {90F0D4AD-7A8C-4708-8B46-551481C81EFD}
+		{120F2328-BBF0-4F90-8CF2-1B73128C140D} = {90F0D4AD-7A8C-4708-8B46-551481C81EFD}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9255118D-6AE7-4332-8A5C-8A2414E92153}
+	EndGlobalSection
+EndGlobal

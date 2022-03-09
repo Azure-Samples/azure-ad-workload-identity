@@ -1,0 +1,29 @@
+{{- if .Values.frontendDeployment.autoscaling.enabled }}
+{{- $deploymentName := include "todolist.frontendDeployment.name" . -}}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ $deploymentName }}
+  labels:
+    {{- include "todolist.frontend.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ $deploymentName }}
+  minReplicas: {{ .Values.frontendDeployment.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.frontendDeployment.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.frontendDeployment.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.frontendDeployment.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.frontendDeployment.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.frontendDeployment.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}

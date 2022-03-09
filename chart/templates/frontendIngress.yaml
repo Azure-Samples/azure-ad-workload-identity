@@ -1,0 +1,36 @@
+{{- if .Values.frontendIngress.enabled -}}
+{{- $frontendServiceName := .Values.frontendService.name -}}
+{{- $frontendServicePort := .Values.frontendService.port -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ default "ingress-frontend" .Values.frontendIngress.name}}
+  {{- with .Values.frontendIngress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.frontendIngress.tls }}
+  tls:
+  {{- range .Values.frontendIngress.tls }}
+  - hosts:
+    {{- range .hosts }}
+    - {{ . }}
+    {{- end }}
+    secretName: tls-frontend
+  {{- end }}
+  {{- end }}
+  rules:
+    {{- range .Values.frontendIngress.hosts }}
+    - host: {{ .host  }}
+      http:
+        paths:
+        - path: /(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: {{ $frontendServiceName }}
+              port:
+                number: {{ $frontendServicePort }}
+    {{- end }}
+  {{- end }}
