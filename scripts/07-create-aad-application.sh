@@ -32,12 +32,6 @@ if [[ -z $displayName ]]; then
   fi
 else
   echo "An AAD application with [$applicationName] display name already exists in the [$tenantId] tenant"
-  # {
-  #   "appId": "82dc4dd8-cd7d-4f4f-8b0f-6aa47ee66665",
-  #   "displayName": "BaboOidc",
-  #   "password": "4AthjN6aI-iSV3F8O8olwv4js6R9fUVpuT",
-  #   "tenant": "72f988bf-86f1-41af-91ab-2d7cd011db47"
-  # }
 fi
 
 # Get the appId of the AAD application
