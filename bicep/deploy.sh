@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Template 
-template="./azuredeploy.json"
-parameters="./azuredeploy.parameters.json"
+template="main.bicep"
+parameters="main.parameters.json"
 
 # AKS cluster name
-aksPrefix="<your-cluster-name-prefix>"
+aksPrefix="Anubis"
 aksName="${aksPrefix}Aks"
 validateTemplate=1
 useWhatIf=0
@@ -13,7 +13,7 @@ installExtensions=0
 
 # Name and location of the resource group for the Azure Kubernetes Service (AKS) cluster
 aksResourceGroupName="${aksPrefix}RG"
-location="WestEurope"
+location="SwitzerlandNorth"
 
 # Name and resource group name of the Azure Container Registry used by the AKS cluster.
 # The name of the cluster is also used to create or select an existing admin group in the Azure AD tenant.
@@ -117,7 +117,7 @@ echo "Checking if [$aksName] aks cluster actually exists in the [$aksResourceGro
 
 az aks show --name $aksName --resource-group $aksResourceGroupName &>/dev/null
 
-if [[ $? == 0 ]]; then
+if [[ $? != 0 ]]; then
     echo "No [$aksName] aks cluster actually exists in the [$aksResourceGroupName] resource group"
 
     # Delete any existing role assignments for the user-defined managed identity of the AKS cluster
@@ -196,11 +196,11 @@ if [[ $? == 0 ]]; then
         echo "No kubelet identity exists for the [$aksName] AKS cluster"
     fi
 
-    # Validate the ARM template
+    # Validate the Bicep template
     if [[ $validateTemplate == 1 ]]; then
         if [[ $useWhatIf == 1 ]]; then
             # Execute a deployment What-If operation at resource group scope.
-            echo "Previewing changes deployed by [$template] ARM template..."
+            echo "Previewing changes deployed by [$template] Bicep template..."
             az deployment group what-if \
                 --resource-group $aksResourceGroupName \
                 --template-file $template \
@@ -212,14 +212,14 @@ if [[ $? == 0 ]]; then
                 vmName=$vmName
 
             if [[ $? == 0 ]]; then
-                echo "[$template] ARM template validation succeeded"
+                echo "[$template] Bicep template validation succeeded"
             else
-                echo "Failed to validate [$template] ARM template"
+                echo "Failed to validate [$template] Bicep template"
                 exit
             fi
         else
-            # Validate the ARM template
-            echo "Validating [$template] ARM template..."
+            # Validate the Bicep template
+            echo "Validating [$template] Bicep template..."
             output=$(az deployment group validate \
                 --resource-group $aksResourceGroupName \
                 --template-file $template \
@@ -231,17 +231,17 @@ if [[ $? == 0 ]]; then
                 vmName=$vmName)
 
             if [[ $? == 0 ]]; then
-                echo "[$template] ARM template validation succeeded"
+                echo "[$template] Bicep template validation succeeded"
             else
-                echo "Failed to validate [$template] ARM template"
+                echo "Failed to validate [$template] Bicep template"
                 echo $output
                 exit
             fi
         fi
     fi
 
-    # Deploy the ARM template
-    echo "Deploying [$template] ARM template..."
+    # Deploy the Bicep template
+    echo "Deploying [$template] Bicep template..."
     az deployment group create \
         --resource-group $aksResourceGroupName \
         --only-show-errors \
@@ -254,13 +254,23 @@ if [[ $? == 0 ]]; then
         vmName=$vmName 1>/dev/null
 
     if [[ $? == 0 ]]; then
-        echo "[$template] ARM template successfully provisioned"
+        echo "[$template] Bicep template successfully provisioned"
     else
-        echo "Failed to provision the [$template] ARM template"
+        echo "Failed to provision the [$template] Bicep template"
         exit
     fi
 else
     echo "[$aksName] aks cluster already exists in the [$aksResourceGroupName] resource group"
+fi
+
+# Create AKS cluster if does not exist
+echo "Checking if [$aksName] aks cluster actually exists in the [$aksResourceGroupName] resource group..."
+
+az aks show --name $aksName --resource-group $aksResourceGroupName &>/dev/null
+
+if [[ $? != 0 ]]; then
+    echo "No [$aksName] aks cluster actually exists in the [$aksResourceGroupName] resource group"
+    exit
 fi
 
 # Get the user principal name of the current user

@@ -30,7 +30,12 @@
       "value": "azadmin"
     },
     "aksClusterSshPublicKey": {
-      "value": "<aks-cluster-ssh-public-key>"
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/1a45a694-ae23-4650-9774-89a571c462f6/resourceGroups/BaboKeyVaultResourceGroup/providers/Microsoft.KeyVault/vaults/BaboKeyVault"
+        },
+        "secretName": "aksClusterSshPublicKey"
+      }
     },
     "aadProfileManaged": {
       "value": true
@@ -40,8 +45,8 @@
     },
     "aadProfileAdminGroupObjectIDs": {
       "value": [
-        "aad-profile-admin-group-object-id-1",
-        "aad-profile-admin-group-object-id-2"
+        "6e5de8c1-5a4b-409b-994f-0706e4403b77",
+        "78761057-c58c-44b7-aaa7-ce1639c6c4f5"
       ]
     },
     "systemNodePoolName": {
@@ -104,7 +109,7 @@
       "value": 60
     },
     "vmName": {
-      "value": "TestVM"
+      "value": "GundamVm"
     },
     "vmSize": {
       "value": "Standard_F4s_v2"
@@ -125,7 +130,12 @@
       "value": "azadmin"
     },
     "vmAdminPasswordOrKey": {
-      "value": "<vm-password-or-ssh-key>"
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/1a45a694-ae23-4650-9774-89a571c462f6/resourceGroups/BaboKeyVaultResourceGroup/providers/Microsoft.KeyVault/vaults/BaboKeyVault"
+        },
+        "secretName": "vmAdminSshPublicKey"
+      }
     },
     "diskStorageAccounType": {
       "value": "Premium_LRS"
@@ -149,13 +159,28 @@
       "value": "install-azure-devops-self-hosted-agent.sh"
     },
     "azureDevOpsUrl": {
-      "value": "<azure-devops-organization-url>"
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/1a45a694-ae23-4650-9774-89a571c462f6/resourceGroups/KeyVaultsRG/providers/Microsoft.KeyVault/vaults/DevOpsTerraformKeyVault"
+        },
+        "secretName": "azureDevOpsUrl"
+      }
     },
      "azureDevOpsPat": {
-      "value": "<azure-devops-personal-access-token>"
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/1a45a694-ae23-4650-9774-89a571c462f6/resourceGroups/KeyVaultsRG/providers/Microsoft.KeyVault/vaults/DevOpsTerraformKeyVault"
+        },
+        "secretName": "azureDevOpsPat"
+      }
     },
     "azureDevOpsPool": {
-      "value": "<azure-devops-pool-name>"
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/1a45a694-ae23-4650-9774-89a571c462f6/resourceGroups/KeyVaultsRG/providers/Microsoft.KeyVault/vaults/DevOpsTerraformKeyVault"
+        },
+        "secretName": "azureDevOpsAgentPoolName"
+      }
     },
     "aksClusterEnablePrivateCluster": {
       "value": false
@@ -165,6 +190,11 @@
     },
     "podIdentityProfileEnabled": {
       "value": false
+    },
+    "keyVaultObjectIds": {
+      "value": [
+        "0c5267b2-01f3-4a59-970e-0d9218d5412e"
+      ]
     }
   }
 }
