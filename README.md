@@ -80,22 +80,22 @@ You can share any feedback or questions via GitHub [issues](https://github.com/A
 
 ## Architecture
 
-This sample provides an ARM templates to deploy the following infrastructure on Azure. The ARM templates provides the ability to deploy a public or a private AKS cluster. In a production environment, we strongly recommend to deploy a [private AKS cluster](https://docs.microsoft.com/en-us/azure/aks/private-clusters) with [Uptime SLA](https://docs.microsoft.com/en-us/azure/aks/uptime-sla). For more information, see [private AKS cluster with a Public DNS address](https://docs.microsoft.com/en-us/azure/aks/private-clusters#create-a-private-aks-cluster-with-a-public-dns-address).
+This sample provides both a Bicep and ARM template to deploy the following infrastructure on Azure. Both templates provide the ability to deploy a public or a private AKS cluster. In a production environment, we strongly recommend to deploy a [private AKS cluster](https://docs.microsoft.com/en-us/azure/aks/private-clusters) with [Uptime SLA](https://docs.microsoft.com/en-us/azure/aks/uptime-sla). For more information, see [private AKS cluster with a Public DNS address](https://docs.microsoft.com/en-us/azure/aks/private-clusters#create-a-private-aks-cluster-with-a-public-dns-address).
 
 ![AKS Architecture](images/architecture.png)
 
-The ARM template deploys the following Azure resources:
+Both the Bicep and ARM template deploy the following Azure resources:
 
 - A private AKS cluster composed of a:
   - System node pool hosting only critical system pods and services. The worker nodes have node taint which prevents application pods from beings scheduled on this node pool.
   - User node pool hosting user workloads and artifacts.
 - A new virtual network with four subnets:
-  - AksSubnet: this subnet is used for the AKS cluster worker nodes. The VMSS of both the system and user node pools will be created in this subnet. You can change the ARM template to use a separate subnet for the two node pools.
+  - AksSubnet: this subnet is used for the AKS cluster worker nodes. The VMSS of both the system and user node pools will be created in this subnet. You can change the ARM template or `network.bicep` Bicep module to use a separate subnet for the two node pools.
   - AzureBastionSubnet: a subnet for Azure Bastion
-  - VmSubnet: a subnet for the Jumpbox virtual machine used to connect to the private AKS cluster and for the private endpoints.
+  - VmSubnet: a subnet for the jump-box virtual machine used to connect to the private AKS cluster and for the private endpoints.
 - A user-defined managed identity used by the AKS cluster to create additional resources like load balancers and managed disks in Azure.
 - A private endpoint to the API server hosted by an AKS-managed Azure subscription. The cluster can communicate with the API server exposed via a Private Link Service using a private endpoint.
-- An Azure Bastion resource that provides secure and seamless SSH connectivity to the Jumpbox virtual machine directly in the Azure portal over SSL
+- An Azure Bastion resource that provides secure and seamless SSH connectivity to the jump-box virtual machine directly in the Azure portal over SSL
 - An Azure Container Registry (ACR) to build, store, and manage container images and artifacts in a private registry for all types of container deployments.
 - An Azure Key Vault used by the sample running on AKS to retrieve application settings stored in Key Vault as secrets.
 - A private endpoint to the Blob Storage Account used to store the boot diagnostics logs or the virtual machine and the files used by the sample ASP.NET frontend and backend applications for [ASP.NET Data Protection](https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/introduction?view=aspnetcore-6.0).
@@ -106,7 +106,7 @@ The ARM template deploys the following Azure resources:
 - A Private DNS Zone for the name resolution of the private endpoint to Azure Container Registry (ACR)
 - A Private DNS Zone for the name resolution of the private endpoint to Key Vault
 - A Virtual Network Link between the virtual network hosting the cluster and the Private DNS Zone to let the cluster to use the CNAME and A records defined by the Private DNS Zone for the name resolution of the API server of the cluster.
-- A jumpbox virtual machine to manage the private AKS cluster.
+- A jump-box virtual machine to manage the private AKS cluster.
 - A Log Analytics workspace to collect the diagnostics logs and metrics from:
   - Azure Kubernetes Service cluster
   - Azure virtual machine
@@ -125,11 +125,11 @@ The ARM template deploys the following Azure resources:
 This sample provides a Visual Studio solution under the `src` folder that contains the following projects:
 
 - `TodoWeb`: this project is an ASP.NET Web application written in C# using .NET Standard 6.0. This project contains the code of the frontend application. The user interface is composed of a set of Razor pages that can be used to browse, create, delete, update and see the details of a collection of todo items stored in a Cosmos DB database. The frontend service is configured to send logs, events, traces, requests, dependencies and exceptions to `Application Insights`.
-- `TodoApi`:  this project contains the code of an ASP.NET REST API invoked by the frontend application to access the data stroed in the Cosmos DB database. Each time a CRUD operation is performed by any of the methods exposed bu the `TodoController`, the backend service sends a notification message to a `Service Bus queue`. You can use my [Service Bus Explorer](https://github.com/paolosalvatori/ServiceBusExplorer) to read messages from the queue. The frontend service is configured to send logs, events, traces, requests, dependencies and exceptions to `Application Insights`. The backend service adopts [Swagger/OpenAPI](https://swagger.io/) to expose a machine-readable representation of its RESTful API.
+- `TodoApi`:  this project contains the code of an ASP.NET REST API invoked by the frontend application to access the data stored in the Cosmos DB database. Each time a CRUD operation is performed by any of the methods exposed bu the `TodoController`, the backend service sends a notification message to a `Service Bus queue`. You can use my [Service Bus Explorer](https://github.com/paolosalvatori/ServiceBusExplorer) to read messages from the queue. The frontend service is configured to send logs, events, traces, requests, dependencies and exceptions to `Application Insights`. The backend service adopts [Swagger/OpenAPI](https://swagger.io/) to expose a machine-readable representation of its RESTful API.
 
 ## Infrastructure Deployment
 
-You can use the `deploy.sh` Bash script under the `templates` folder to deploy the infrastructure to Azure. Make sure to change the name of the AKS cluster in the `deploy.sh` Bash script and substitute the placeholders in the `azuredeploy.parameters.json` file with meaningful values. Also, make sure to enable the following public preview features before deploying the ARM template:
+You can use the `deploy.sh` Bash script under the `bicep` folder to deploy the infrastructure using Bicep modules, or the `deploy.sh` Bash script under the `arm` folder to deploy the infrastructure using the ARM template. In both cases, make sure to change the name of the AKS cluster in the `deploy.sh` Bash script and substitute the placeholders in the `azuredeploy.parameters.json` file with meaningful values. Also, make sure to enable the following public preview features before deploying the ARM template:
 
 - [PodSecurityPolicyPreview](https://docs.microsoft.com/en-us/azure/aks/use-pod-security-policies)
 - [RunCommandPreview](https://docs.microsoft.com/en-us/azure/aks/private-clusters#options-for-connecting-to-the-private-cluster)
@@ -139,12 +139,12 @@ You can use the `deploy.sh` Bash script under the `templates` folder to deploy t
 - [AutoUpgradePreview](https://docs.microsoft.com/en-us/azure/aks/upgrade-cluster#set-auto-upgrade-channel)
 - [EnableOIDCIssuerPreview](https://docs.microsoft.com/en-us/azure/aks/cluster-configuration#oidc-issuer-preview)
 
-The `templates/deploy.sh` deployment script automatically registers the above preview features.
-The following picture shows the resources deployed by the ARM template in the target resource group.
+The `deploy.sh` deployment script automatically registers the above preview features.
+The following picture shows the resources deployed by the both the Bicep and ARM template in the target resource group.
 
 ![Resource Group](images/resourcegroup.png)
 
-The following picture shows the resources deployed by the ARM template in the [node resource group](https://docs.microsoft.com/en-us/azure/aks/faq#why-are-two-resource-groups-created-with-aks) associated to the AKS cluster:
+The following picture shows the resources deployed by the Bicep or ARM template in the [node resource group](https://docs.microsoft.com/en-us/azure/aks/faq#why-are-two-resource-groups-created-with-aks) associated to the AKS cluster:
 
 ![MC Resource Group](images/mc_resourcegroup.png)
 
@@ -246,7 +246,7 @@ _serviceBusClient = new ServiceBusClient($"{_options.ServiceBus.Namespace}.servi
 
 ## Application Configuration
 
-The ARM template also creates all the necessary secrets used by both the frontend and backend applications as shown in the picture below:
+The Bicep or ARM template also creates all the necessary secrets used by both the frontend and backend applications as shown in the picture below:
 
 ![Key Vault Secrets](images/key-vault-secrets.png)
 
@@ -503,7 +503,7 @@ Run the `scripts/05-install-azure-ad-workload-cli.sh` script to install the [Azu
 brew install Azure/azure-workload-identity/azwi
 ```
 
-The ARM template automatically creates the secrets used by the fronend and backend services. Still, you can use the `scripts/06-create-key-vault-and-secrets.sh` script to create the necessary secrets to your Azure Key Vault.
+Both the Bicep and ARM templates automatically create the secrets used by the frontend and backend services. Still, you can use the `scripts/06-create-key-vault-and-secrets.sh` script to create the necessary secrets to your Azure Key Vault.
 
 ```bash
 #!/bin/bash

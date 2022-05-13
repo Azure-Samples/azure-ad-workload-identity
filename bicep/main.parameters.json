@@ -190,6 +190,11 @@
     },
     "podIdentityProfileEnabled": {
       "value": false
+    },
+    "keyVaultObjectIds": {
+      "value": [
+        "0c5267b2-01f3-4a59-970e-0d9218d5412e"
+      ]
     }
   }
 }
