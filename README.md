@@ -1376,7 +1376,7 @@ If you use a public [Azure DNS](https://docs.microsoft.com/en-us/azure/dns/dns-o
 namespace="ingress-basic"
 releaseName="nginx-ingress"
 dnsZoneName="<your-public-dns-zone-name>"
-dnsZoneResourceGroupName="<your-public-dns-zone-resouce-group-name>"
+dnsZoneResourceGroupName="<your-public-dns-zone-resource-group-name>"
 frontendSubdomain="todo"
 backendSubdomain="todoapi"
 
