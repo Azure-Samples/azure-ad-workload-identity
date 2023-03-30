@@ -48,6 +48,7 @@ Selector labels
 {{- define "todolist.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "todolist.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+azure.workload.identity/use: "true"
 {{- end }}
 
 {{/*
