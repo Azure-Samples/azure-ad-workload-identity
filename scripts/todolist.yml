@@ -11,6 +11,7 @@ spec:
     matchLabels:
       app: todolist
       role: backend
+      azure.workload.identity/use: "true"
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -18,11 +19,14 @@ spec:
   minReadySeconds: 5
   template:
     metadata:
+      annotations:
+        prometheus.io/scrape: "true"
       labels:
         app: todolist
         role: backend
+        azure.workload.identity/use: "true"
     spec:
-      serviceAccountName: todolist-identity-sa
+      serviceAccountName: todo-sa
       topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: topology.kubernetes.io/zone
@@ -122,6 +126,7 @@ spec:
     matchLabels:
      app: todolist
      role: frontend
+     azure.workload.identity/use: "true"
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -129,11 +134,14 @@ spec:
   minReadySeconds: 5 
   template:
     metadata:
+      annotations:
+        prometheus.io/scrape: "true"
       labels:
         app: todolist
         role: frontend
+        azure.workload.identity/use: "true"
     spec:
-      serviceAccountName: todolist-identity-sa
+      serviceAccountName: todo-sa
       topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: topology.kubernetes.io/zone
