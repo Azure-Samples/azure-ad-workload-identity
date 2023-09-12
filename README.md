@@ -22,7 +22,7 @@ products:
 - azure-key-vault
 - azure-monitor
 - azure-log-analytics
-- azure-application-insights
+- azure-monitor
 - azure-virtual-machines
 - azure-application-gateway
 - azure-cosmos-db
