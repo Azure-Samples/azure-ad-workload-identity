@@ -63,13 +63,6 @@ Create the name of the service account to use
 {{- end }}
 
 {{/*
-Create service account labels
-*/}}
-{{- define "todolist.serviceAccount.labels" -}}
-azure.workload.identity/use: "true"
-{{- end }}
-
-{{/*
 Frontend service and deployment labels
 */}}
 {{- define "todolist.frontend.labels" -}}
@@ -154,5 +147,4 @@ Service account annotations
 {{ end }}
 {{- end -}}
 azure.workload.identity/client-id: {{ .Values.serviceAccount.appId }}
-azure.workload.identity/tenant-id: {{ .Values.serviceAccount.tenantId }}
 {{- end }}
