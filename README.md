@@ -1248,9 +1248,6 @@ metadata:
   namespace: ${namespace}
   annotations:
     azure.workload.identity/client-id: ${appId}
-    azure.workload.identity/tenant-id: ${tenantId}
-  labels:
-    azure.workload.identity/use: "true"
 EOF
   else
     azwi serviceaccount create phase sa \
