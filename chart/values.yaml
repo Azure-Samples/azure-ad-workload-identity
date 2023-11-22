@@ -15,7 +15,6 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: "todolist-identity-sa"
   appId: ""
-  tenantId: ""
 
 configMap:
   aspNetCoreEnvironment: Docker
